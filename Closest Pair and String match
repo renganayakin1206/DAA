@@ -1,0 +1,201 @@
+#include <math.h>
+#include "closehead.h"
+
+float calculateDistance(float x1, float y1, float x2, float y2) {
+    return sqrt((x1 - x2) * (x1 - x2) +
+                (y1 - y2) * (y1 - y2));
+}
+
+
+
+#include <stdio.h>
+#include "closehead.h"
+
+int main() {
+    int n;
+    float minDist;
+
+    printf("Enter number of points: ");
+    scanf("%d", &n);
+
+    float x[n], y[n];
+    int i;
+    for (i = 0; i < n; i++) {
+        printf("Enter x and y coordinates of point %d: ", i + 1);
+        scanf("%f %f", &x[i], &y[i]);
+    }
+
+    minDist = calculateDistance(x[0], y[0], x[1], y[1]);
+    int p1 = 0, p2 = 1;
+    int j;
+    for (i = 0; i < n - 1; i++) {
+        for (j = i + 1; j < n; j++) {
+            float dist = calculateDistance(x[i], y[i], x[j], y[j]);
+            if (dist < minDist) {
+                minDist = dist;
+                p1 = i;
+                p2 = j;
+            }
+        }
+    }
+
+    printf("\nClosest Pair of Points:\n");
+    printf("Point 1: (%.2f, %.2f)\n", x[p1], y[p1]);
+    printf("Point 2: (%.2f, %.2f)\n", x[p2], y[p2]);
+    printf("Minimum Distance = %.4f\n", minDist);
+
+    return 0;
+}
+
+
+close: closeimp.o closeapp.o
+        cc closeimp.o closeapp.o -o close
+closeimp.o: closehead.h closeimp.c
+        cc -c closeimp.c
+closeapp.o: closehead.h closeapp.c
+        cc -c closeapp.c
+
+
+Enter points: 5
+Enter coordinates of x,y:
+1 2
+3 4
+4 5
+5 6
+7 7
+
+Distances between each pair:
+(1,2) - (3,4) = 2.82843
+(1,2) - (4,5) = 4.24264
+(1,2) - (5,6) = 5.65685
+(1,2) - (7,7) = 7.81025
+(3,4) - (4,5) = 1.41421
+(3,4) - (5,6) = 2.82843
+(3,4) - (7,7) = 5
+(4,5) - (5,6) = 1.41421
+(4,5) - (7,7) = 3.60555
+(5,6) - (7,7) = 2.23607
+
+Closest Pair: (3,4) and (4,5)
+Minimum Distance = 1.41421
+
+#include <stdio.h>
+#include <string.h>
+void bruteForceMatch(char text[], char pattern[]);
+
+
+
+#include "matchhead.h"
+
+void bruteForceMatch(char text[], char pattern[]) {
+    int n = strlen(text);
+    int m = strlen(pattern);
+    int comparisons = 0;
+    int found = 0;
+
+    printf("\nVisualizing Movement:\n");
+    printf("TEXT: %s\n", text);
+    printf("      ");
+    int r;
+    for(r = 0; r < n; r++) printf("%d", r % 10);
+    printf("\n--------------------------------\n");
+    int i,k;
+    for (i = 0; i <= n - m; i++) {
+        printf("[%02d] ", i);
+        for (k= 0; k < i; k++) {
+            printf(" ");
+        }
+        printf("%s", pattern);
+
+        int j;
+        for (j = 0; j < m; j++) {
+            comparisons++;
+            if (text[i + j] != pattern[j]) {
+                break;
+            }
+        }
+
+        if (j == m) {
+            printf(" <-- MATCH\n");
+            found = 1;
+        } else {
+            printf("\n");
+        }
+    }
+
+    if (!found) printf("\nPattern not found.\n");
+    printf("Total Comparisons: %d\n", comparisons);
+}
+
+
+#include "matchhead.h"
+
+void trimNewline(char str[]) {
+    str[strcspn(str, "\n")] = 0;
+}
+
+int main() {
+    char text[100];
+    char pattern[50];
+
+    printf("--- Brute Force Visualizer ---\n");
+
+    printf("Enter the Text: ");
+    fgets(text, sizeof(text), stdin);
+    trimNewline(text);
+
+    printf("Enter the Pattern: ");
+    fgets(pattern, sizeof(pattern), stdin);
+    trimNewline(pattern);
+
+    if (strlen(pattern) > strlen(text)) {
+        printf("Error: Pattern cannot be longer than text.\n");
+    } else {
+        bruteForceMatch(text, pattern);
+    }
+
+    return 0;
+}
+
+
+--- Brute Force Visualizer ---
+Enter the Text: Hi everyone
+Enter the Pattern: ry
+
+Visualizing Movement:
+TEXT: Hi everyone
+      01234567890
+--------------------------------
+[00] ry
+[01]  ry
+[02]   ry
+[03]    ry
+[04]     ry
+[05]      ry
+[06]       ry <-- MATCH
+[07]        ry
+[08]         ry
+[09]          ry
+Total Comparisons: 11
+
+--- Brute Force Visualizer ---
+Enter the Text: Hi everyone
+Enter the Pattern: ey
+
+Visualizing Movement:
+TEXT: Hi everyone
+      01234567890
+--------------------------------
+[00] ey
+[01]  ey
+[02]   ey
+[03]    ey
+[04]     ey
+[05]      ey
+[06]       ey
+[07]        ey
+[08]         ey
+[09]          ey
+
+Pattern not found.
+Total Comparisons: 12
