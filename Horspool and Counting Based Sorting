@@ -1,0 +1,229 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+#define MAX_CHAR 26
+
+void precomputeShiftTable(const char* pattern, int m, int shiftTable[]) {
+    for (int i = 0; i < MAX_CHAR; i++) {
+        shiftTable[i] = m;
+    }
+    for (int j = 0; j < m - 1; j++) {
+        shiftTable[pattern[j] - 'a'] = m - 1 - j;
+    }
+
+    cout << "\n--- Shift Table ---" << endl;
+    for (int j = 0; j < m - 1; j++) {
+        cout << pattern[j] << " : " << shiftTable[pattern[j] - 'a'] << endl;
+    }
+    cout << "Others : " << m << endl;
+}
+
+int horspoolSearch(const char* text, const char* pattern) {
+    int n = strlen(text);
+    int m = strlen(pattern);
+
+    if (m > n) return -1;
+
+    int shiftTable[MAX_CHAR];
+    precomputeShiftTable(pattern, m, shiftTable);
+
+    cout << "\n--- Searching Steps ---" << endl;
+    int i = m - 1;
+    int step = 1;
+
+    while (i < n) {
+        cout << "Step " << step++ << ": Comparing pattern at index " << i - m + 1 << endl;
+        cout << "  Text:    " << text << endl;
+
+        for(int s=0; s < (i - m + 1); s++) cout << " ";
+        cout << "  Pattern: " << pattern << endl;
+
+        int k = 0;
+        while (k < m && pattern[m - 1 - k] == text[i - k]) {
+            k++;
+        }
+
+        if (k == m) {
+            return i - m + 1;
+        } else {
+            int shift = shiftTable[text[i] - 'a'];
+            cout << "  Mismatch! Character '" << text[i] << "' shifts pattern by " << shift << "\n" << endl;
+            i += shift;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    char text[500];
+    char pattern[100];
+
+    cout << "Enter the text (lowercase): ";
+    cin.getline(text, 500);
+
+    cout << "Enter the pattern (lowercase): ";
+    cin.getline(pattern, 100);
+
+    int result = horspoolSearch(text, pattern);
+
+    if (result != -1) {
+        cout << "\nFinal Result: Pattern found at index " << result << endl;
+    } else {
+        cout << "\nFinal Result: Pattern not found." << endl;
+    }
+
+    return 0;
+}
+
+
+Enter the text (lowercase): good morning
+Enter the pattern (lowercase): rni
+
+--- Shift Table ---
+r : 2
+n : 1
+Others : 3
+
+--- Searching Steps ---
+Step 1: Comparing pattern at index 0
+  Text:    good morning
+  Pattern: rni
+  Mismatch! Character 'o' shifts pattern by 3
+
+Step 2: Comparing pattern at index 3
+  Text:    good morning
+     Pattern: rni
+  Mismatch! Character 'm' shifts pattern by 3
+
+Step 3: Comparing pattern at index 6
+  Text:    good morning
+        Pattern: rni
+  Mismatch! Character 'n' shifts pattern by 1
+
+Step 4: Comparing pattern at index 7
+  Text:    good morning
+         Pattern: rni
+
+Final Result: Pattern found at index 7
+
+Enter the text (lowercase): good morning
+Enter the pattern (lowercase): ty
+
+--- Shift Table ---
+t : 1
+Others : 2
+
+--- Searching Steps ---
+Step 1: Comparing pattern at index 0
+  Text:    good morning
+  Pattern: ty
+  Mismatch! Character 'o' shifts pattern by 2
+
+Step 2: Comparing pattern at index 2
+  Text:    good morning
+    Pattern: ty
+  Mismatch! Character 'd' shifts pattern by 2
+
+Step 3: Comparing pattern at index 4
+  Text:    good morning
+      Pattern: ty
+  Mismatch! Character 'm' shifts pattern by 2
+
+Step 4: Comparing pattern at index 6
+  Text:    good morning
+        Pattern: ty
+  Mismatch! Character 'r' shifts pattern by 2
+
+Step 5: Comparing pattern at index 8
+  Text:    good morning
+          Pattern: ty
+  Mismatch! Character 'i' shifts pattern by 2
+
+Step 6: Comparing pattern at index 10
+  Text:    good morning
+            Pattern: ty
+  Mismatch! Character 'g' shifts pattern by 2
+
+
+Final Result: Pattern not found.
+
+#include <iostream>
+
+using namespace std;
+
+void comparisonSortWithTable(int arr[], int n) {
+    int count[n];
+    int sortedArr[n];
+
+    // Initialize counts to 0
+    for (int i = 0; i < n; i++) count[i] = 0;
+
+    cout << "\nPass #\tElement\t\tCurrent Count Array" << endl;
+    cout << "--------------------------------------------------" << endl;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (arr[i] <= arr[j]) {
+                count[j]++;
+            } else {
+                count[i]++;
+            }
+        }
+        cout << (i + 1) << "\t" << arr[i] << "\t\t[ ";
+        for (int k = 0; k < n; k++) {
+            cout << count[k] << " ";
+        }
+        cout << "]" << endl;
+    }
+    for (int i = 0; i < n; i++) {
+        sortedArr[count[i]] = arr[i];
+    }
+
+    for (int i = 0; i < n; i++) {
+        arr[i] = sortedArr[i];
+    }
+}
+
+int main() {
+    int n;
+
+    cout << "Enter the number of elements: ";
+    cin >> n;
+
+    int data[n];
+    cout << "Enter " << n << " integers:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Element " << i + 1 << ": ";
+        cin >> data[i];
+    }
+
+    comparisonSortWithTable(data, n);
+
+    cout << "--------------------------------------------------" << endl;
+    cout << "\nFinal Sorted Array: ";
+    for (int i = 0; i < n; i++) {
+        cout << data[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+Enter the number of elements: 5
+Enter 5 integers:
+Element 1: 7
+Element 2: 2
+Element 3: 8
+Element 4: 3
+Element 5: 1
+
+Pass #  Element         Current Count Array
+--------------------------------------------------
+1       7               [ 3 0 1 0 0 ]
+2       2               [ 3 1 2 1 0 ]
+3       8               [ 3 1 4 1 0 ]
+4       3               [ 3 1 4 2 0 ]
+--------------------------------------------------
+
+Final Sorted Array: 1 2 3 7 8
