@@ -1,0 +1,104 @@
+#include <iostream>
+
+using namespace std;
+
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+}
+
+void percolateDown(int arr[], int n, int i) {
+    int smallest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+
+    if (left < n && arr[left] < arr[smallest])
+        smallest = left;
+
+
+    if (right < n && arr[right] < arr[smallest])
+        smallest = right;
+
+
+    if (smallest != i) {
+        int temp = arr[i];
+        arr[i] = arr[smallest];
+        arr[smallest] = temp;
+        percolateDown(arr, n, smallest);
+    }
+}
+
+int main() {
+    int n;
+    cout << "Enter number of keys: ";
+    cin >> n;
+
+    int arr[100];
+
+
+    cout << "\n--- STAGE 1: Top-to-Bottom Insertion ---" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Enter element " << i + 1 << ": ";
+        cin >> arr[i];
+    }
+    cout << "Initial Tree (Level-Order): ";
+    printArray(arr, n);
+
+
+    cout << "\n--- STAGE 1: Percolating Down to Build Min-Heap ---" << endl;
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        percolateDown(arr, n, i);
+        cout << "After percolating index " << i << ": ";
+        printArray(arr, n);
+    }
+
+
+    cout << "\n--- STAGE 2: Repeatedly Deleting Min (Sorting) ---" << endl;
+    for (int i = n - 1; i > 0; i--) {
+
+        int temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+
+        cout << "Extracted Min [" << temp << "]. New root: [" << arr[0] << "]" << endl;
+
+
+        percolateDown(arr, i, 0);
+        cout << "Heap after percolating down: ";
+        printArray(arr, i);
+        cout << "---------------------------------------" << endl;
+    }
+
+
+    cout << "\nFinal Array (Descending Order via Min-Heap): ";
+    printArray(arr, n);
+
+    return 0;
+}
+
+Enter number of keys: 5
+
+--- STAGE 1: Top-to-Bottom Insertion ---
+Enter element 1: 6 12 7 39 4
+Enter element 2: Enter element 3: Enter element 4: Enter element 5: Initial Tree (Level-Order): 6 12 7 39 4
+
+--- STAGE 1: Percolating Down to Build Min-Heap ---
+After percolating index 1: 6 4 7 39 12
+After percolating index 0: 4 6 7 39 12
+
+--- STAGE 2: Repeatedly Deleting Min (Sorting) ---
+Extracted Min [4]. New root: [12]
+Heap after percolating down: 6 12 7 39
+---------------------------------------
+Extracted Min [6]. New root: [39]
+Heap after percolating down: 7 12 39
+---------------------------------------
+Extracted Min [7]. New root: [39]
+Heap after percolating down: 12 39
+---------------------------------------
+Extracted Min [12]. New root: [39]
+Heap after percolating down: 39
+---------------------------------------
+
+Final Array (Descending Order via Min-Heap): 39 12 7 6 4
