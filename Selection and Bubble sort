@@ -1,0 +1,130 @@
+#include"selhead.h"
+void selection_sort(int A[],int n)
+{
+   int i,j,k,min,temp;
+   for (i=0;i<=n-2;i++)
+   {
+      min=i;
+      for(j=i+1;j<=n-1;j++)
+      {
+         if(A[min]>A[j])
+            min=j;
+      }
+      temp=A[i];
+      A[i]=A[min];
+      A[min]=temp;
+      printf("Pass no:%d\n",i+1);
+      for (k=0;k<n;k++){
+         printf("%d ",A[k]);
+      }
+      printf("\n");
+   }
+   printf("After sorting:");
+   for(i=0;i<n;i++)
+   {
+      printf("%d ", A[i]);
+   }
+   printf("\n");
+}
+[24bcs089@mepcolinux selec]$cat selapp.c
+#include"selhead.h"
+int main(){
+   int n,i;
+   printf("Enter the size of the array:");
+   scanf("%d",&n);
+   int arr[n];
+   printf("Enter the elements of array:");
+   for(i=0;i<n;i++){
+      scanf("%d",&arr[i]);
+   }
+   printf("Before sorting:");
+   for(i=0;i<n;i++){
+      printf("%d ",arr[i]);
+   }
+   printf("\n");
+   selection_sort(arr,n);
+   return 0;
+}
+[24bcs089@mepcolinux selec]$./sel
+Enter the size of the array:5
+Enter the elements of array:7 2 0 3 5
+Before sorting:7 2 0 3 5
+Pass no:1
+0 2 7 3 5
+Pass no:2
+0 2 7 3 5
+Pass no:3
+0 2 3 7 5
+Pass no:4
+0 2 3 5 7
+After sorting:0 2 3 5 7
+
+[24bcs089@mepcolinux ex1]$cat bubhead.h
+#include<stdio.h>
+void bubble_sort(int A[],int n);
+
+[24bcs089@mepcolinux ex1]$cat bubimp.c
+#include"bubhead.h"
+void bubble_sort(int A[],int n){
+   int i,j,k,t;
+   for(i=0;i<=n-2;i++){
+      for(j=0;j<=n-2-i;j++){
+         if (A[j]>A[j+1]){
+            t=A[j];
+            A[j]=A[j+1];
+            A[j+1]=t;
+            printf("Pass no:%d\n",i+1);
+            for(k=0;k<n;k++){
+               printf("%d ",A[k]);
+            }
+            printf("\n");
+         }
+      }
+   }
+      printf("After sorting:");
+      for(i=0;i<n;i++){
+         printf("%d ",A[i]);
+      }
+      printf("\n");
+}
+[24bcs089@mepcolinux ex1]$cat bubapp.c
+#include"bubhead.h"
+int main(){
+   int n,i;
+   printf("Enter the size of the array:");
+   scanf("%d",&n);
+   int arr[n];
+   printf("Enter the elements of array:");
+   for(i=0;i<n;i++){
+      scanf("%d",&arr[i]);
+   }
+   printf("Before sorting:");
+   for(i=0;i<n;i++){
+      printf("%d ",arr[i]);
+   }
+   printf("\n");
+   bubble_sort(arr,n);
+   return 0;
+}
+
+[24bcs089@mepcolinux ex1]$./bub
+Enter the size of the array:5
+Enter the elements of array:8 9 3 6 1
+Before sorting:8 9 3 6 1
+Pass no:1
+8 3 9 6 1
+Pass no:1
+8 3 6 9 1
+Pass no:1
+8 3 6 1 9
+Pass no:2
+3 8 6 1 9
+Pass no:2
+3 6 8 1 9
+Pass no:2
+3 6 1 8 9
+Pass no:3
+3 1 6 8 9
+Pass no:4
+1 3 6 8 9
+After sorting:1 3 6 8 9
