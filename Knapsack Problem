@@ -1,0 +1,117 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+struct Item {
+    int weight, value;
+    float ratio;
+    int index;   // to track original item number
+};
+
+bool cmp(Item a, Item b) {
+    return a.ratio > b.ratio;
+}
+
+float bound(int level, int weight, int value, int n, int W, Item items[]) {
+    if (weight >= W)
+        return 0;
+
+    float value_bound = value;
+    int j = level;
+    int totalWeight = weight;
+
+    while (j < n && totalWeight + items[j].weight <= W) {
+        totalWeight += items[j].weight;
+        value_bound += items[j].value;
+        j++;
+    }
+
+    if (j < n)
+        value_bound += (W - totalWeight) * items[j].ratio;
+
+    return value_bound;
+}
+
+int maxValue = 0;
+int bestSet[50], include[50];
+
+void knapsack(int level, int weight, int value, int n, int W, Item items[]) {
+    if (level == n)
+        return;
+
+    float b = bound(level, weight, value, n, W, items);
+
+    if (b <= maxValue)
+        return;
+
+    // INCLUDE item
+    if (weight + items[level].weight <= W) {
+        include[level] = 1;
+
+        int newValue = value + items[level].value;
+        int newWeight = weight + items[level].weight;
+
+        if (newValue > maxValue) {
+            maxValue = newValue;
+            for (int i = 0; i < n; i++)
+                bestSet[i] = include[i];
+        }
+
+        knapsack(level + 1, newWeight, newValue, n, W, items);
+    }
+
+    // EXCLUDE item
+    include[level] = 0;
+    knapsack(level + 1, weight, value, n, W, items);
+}
+
+int main() {
+    int n, W;
+
+    cout << "Enter number of items: ";
+    cin >> n;
+
+    Item items[50];
+
+    cout << "Enter weight and value of each item:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> items[i].weight >> items[i].value;
+        items[i].ratio = (float)items[i].value / items[i].weight;
+        items[i].index = i + 1; // store original index
+    }
+
+    cout << "Enter capacity of knapsack: ";
+    cin >> W;
+
+    sort(items, items + n, cmp);
+
+    knapsack(0, 0, 0, n, W, items);
+
+    cout << "\nMaximum value = " << maxValue << endl;
+
+    cout << "\nItems selected:\n";
+    for (int i = 0; i < n; i++) {
+        if (bestSet[i] == 1) {
+            cout << "Item " << items[i].index
+                 << " (Weight=" << items[i].weight
+                 << ", Value=" << items[i].value << ")\n";
+        }
+    }
+
+    return 0;
+}
+
+
+Enter number of items: 4
+Enter weight and value of each item:
+4 40
+7 42
+5 25
+3 12
+Enter capacity of knapsack: 10
+
+Maximum value = 65
+
+Items selected:
+Item 1 (Weight=4, Value=40)
+Item 3 (Weight=5, Value=25)
