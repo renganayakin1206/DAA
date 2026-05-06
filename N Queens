@@ -1,0 +1,93 @@
+#include <iostream>
+
+using namespace std;
+
+int* x;
+int n;
+
+bool place(int k, int i) {
+    for (int j = 1; j < k; j++) {
+        int diffX = x[j] - i;
+        int diffY = j - k;
+        if (diffX < 0) diffX = -diffX;
+        if (diffY < 0) diffY = -diffY;
+
+        if (x[j] == i || diffX == diffY) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void printSolution() {
+    cout << "\nSolution Vector: [ ";
+    for (int i = 1; i <= n; i++) {
+        cout << x[i] << " ";
+    }
+    cout << "]" << endl;
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (x[i] == j)
+                cout << "Q ";
+            else
+                cout << "* ";
+        }
+        cout << endl;
+    }
+}
+
+void nQueens(int k) {
+    for (int i = 1; i <= n; i++) {
+        if (place(k, i)) {
+            x[k] = i;
+            if (k == n) {
+                printSolution();
+            } else {
+                nQueens(k + 1);
+            }
+        }
+    }
+}
+
+int main() {
+    cout << "Enter number of queens: ";
+    cin >> n;
+
+    x = new int[n + 1];
+
+    nQueens(1);
+
+    delete[] x;
+    return 0;
+}
+
+Enter number of queens: 5
+
+Solution Vector: [ 1 3 5 2 4 ]
+Q * * * *
+* * Q * *
+* * * * Q
+* Q * * *
+* * * Q *
+
+Solution Vector: [ 1 4 2 5 3 ]
+Q * * * *
+* * * Q *
+* Q * * *
+* * * * Q
+* * Q * *
+
+Solution Vector: [ 2 4 1 3 5 ]
+* Q * * *
+* * * Q *
+Q * * * *
+* * Q * *
+* * * * Q
+
+Solution Vector: [ 2 5 3 1 4 ]
+* Q * * *
+* * * * Q
+* * Q * *
+Q * * * *
+* * * Q *
