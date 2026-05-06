@@ -1,0 +1,154 @@
+#include"mergehead.h"
+void merge (int arr[],int left,int mid,int right){
+   int i,j,k;
+   int n1=mid-left+1;
+   int n2=right-mid;
+   int L[n1],R[n2];
+   for(i=0;i<n1;i++)
+   {
+      L[i]=arr[left+i];
+   }
+   for(j=0;j<n2;j++){
+      R[j]=arr[mid+1+j];
+   }
+   i=0;
+   j=0;
+   k=left;
+   while(i<n1 && j<n2){
+      if(L[i]<=R[j]){
+         arr[k]=L[i];
+         i++;
+      }
+      else{
+         arr[k]=R[j];
+         j++;
+      }
+      k++;
+   }
+   while(i<n1){
+      arr[k]=L[i];
+      i++;
+      k++;
+   }
+   while(i<n2){
+      arr[k]=R[j];
+      j++;
+      k++;
+   }
+}
+void mergesort(int arr[],int left,int right){
+   if(left<right){
+      int mid=(left+right)/2;
+      mergesort(arr,left,mid);
+      mergesort(arr,mid+1,right);
+      merge(arr,left,mid,right);
+   }
+}
+
+#include <stdio.h>
+#include "mergehead.h"
+
+int main() {
+    int n, i;
+    printf("Enter the number of elements: ");
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        printf("Invalid size!\n");
+        return 1;
+    }
+
+    int arr[n];
+
+    printf("Enter %d integers:\n", n);
+    for (i = 0; i < n; i++) {
+        printf("Element %d: ", i + 1);
+        scanf("%d", &arr[i]);
+    }
+
+    printf("\nOriginal array: ");
+    for (i = 0; i < n; i++) printf("%d ", arr[i]);
+
+    // 3. Call mergesort
+    mergesort(arr, 0, n - 1);
+
+    printf("\nSorted array: ");
+    for (i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\n");
+
+    return 0;
+}
+
+Enter the number of elements: 4
+Enter 4 integers:
+Element 1: 7
+Element 2: 3
+Element 3: 4
+Element 4: 10
+
+Original array: 7 3 4 10
+Sorted array: 3 4 7 10
+
+
+
+
+#include<stdio.h>
+void quicksort(int a[],int low,int high);
+int partition(int a[],int low,int high);
+
+
+#include"quick.h"
+void quicksort(int a[],int low,int high)
+{
+   int p;
+   if(low<high)
+   {
+      p=partition(a,low,high);
+      quicksort(a,low,p-1);
+      quicksort(a,p+1,high);
+   }
+}
+int partition(int a[],int low,int high){
+   int pivot=a[low];
+   int i=low+1,j=high,temp;
+   while(i<=j)
+   {
+      while(a[i]<=pivot&&i<=high)
+         i++;
+      while(a[i]>pivot)
+         j--;
+      if(i<j){
+         temp=a[i];
+         a[i]=a[j];
+         a[j]=temp;
+      }
+   }
+   temp=a[low];
+   a[low]=a[j];
+   a[j]=temp;
+   return j;
+}
+
+#include"quick.h"
+int main(){
+   int a[50],n,i;
+   printf("Enter number of elements:");
+   scanf("%d",&n);
+   printf("Enter element\n");
+   for(i=0;i<n;i++)
+      scanf("%d",&a[i]);
+   quicksort(a,0,n-1);
+   printf("Sorted elements:\n");
+   for(i=0;i<n;i++)
+      printf("%d",a[i]);
+   getchar();
+   return 0;
+}
+
+Enter the number of elements: 4
+Enter 4 integers:
+Element 1: 7
+Element 2: 3
+Element 3: 4
+Element 4: 10
+
+Original array: 7 3 4 10
+Sorted array: 3 4 7 10
